@@ -1,0 +1,394 @@
+*ansillary.txt*                          ANSI escape sequence highlighting for Neovim
+
+==============================================================================
+CONTENTS                                                     *ansillary-contents*
+
+1. Introduction ................................ |ansillary-introduction|
+2. Requirements ................................ |ansillary-requirements|
+3. Installation ................................ |ansillary-installation|
+4. Configuration ............................... |ansillary-configuration|
+5. Commands .................................... |ansillary-commands|
+6. API ......................................... |ansillary-api|
+7. Supported Formats ........................... |ansillary-formats|
+8. Examples .................................... |ansillary-examples|
+9. Changelog ................................... |ansillary-changelog|
+10. License .................................... |ansillary-license|
+
+==============================================================================
+1. INTRODUCTION                                         *ansillary-introduction*
+
+`ansillary.nvim` is a Neovim plugin that highlights text surrounded by ANSI
+color codes with the appropriate colors and styles, while optionally
+concealing the ANSI escape sequences themselves.
+
+Features:~
+  • True color support for modern terminals
+  • Style support: bold, italic, underline, dim, reverse, strikethrough
+  • Cursor-aware concealment: ANSI codes hidden except when cursor is on line
+  • Real-time updates as you type
+  • Support for many different ANSI escape sequence formats
+  • Compatible with all colorschemes
+
+==============================================================================
+2. REQUIREMENTS                                         *ansillary-requirements*
+
+• Neovim >= 0.7.0
+• Terminal with true color support (recommended)
+
+==============================================================================
+3. INSTALLATION                                         *ansillary-installation*
+
+Using `lazy.nvim`: >lua
+    {
+      "cohml/ansillary.nvim",
+      config = function()
+        require("ansillary").setup()
+      end,
+    }
+<
+
+Using `packer.nvim`: >lua
+    use {
+      "cohml/ansillary.nvim",
+      config = function()
+        require("ansillary").setup()
+      end,
+    }
+<
+
+Using `vim-plug`: >vim
+    Plug 'cohml/ansillary.nvim'
+<
+Then add to your `init.lua`: >lua
+    require("ansillary").setup()
+<
+
+Local installation: >lua
+    {
+      dir = "/path/to/ansillary.nvim",
+      name = "ansillary",
+      config = function()
+        require("ansillary").setup()
+      end,
+    }
+<
+
+==============================================================================
+4. CONFIGURATION                                       *ansillary-configuration*
+
+Default configuration: >lua
+    require("ansillary").setup({
+      conceal = true,               -- Hide ANSI escape sequences
+      reveal_on_cursorline = true,  -- Reveal ANSI codes when cursor is on the line
+      warn_on_unsupported = true,   -- Show warning when unsupported attributes are encountered
+      text_highlights = {           -- Text content highlighting configuration
+        enabled = true,             -- Enable highlighting of text content based on ANSI codes
+        format = {                  -- Formatting options for text content
+          fg = {
+            color = "auto",         -- Color for text (auto = inherit from ANSI codes)
+            style = "auto",         -- Style for text (auto = inherit from ANSI codes, or comma-delimited styles)
+                                       -- Valid styles: bold, italic, underline, reverse, strikethrough
+                                       -- Examples: "bold", "italic,underline", "bold,reverse"
+          },
+          bg = {
+            color = "auto",         -- Background color for text (auto = inherit from ANSI codes)
+          },
+        },
+      },
+      ansi_highlights = {           -- ANSI escape sequence highlighting configuration
+        enabled = false,            -- Enable highlighting of ANSI escape sequences themselves
+        format = {                  -- Formatting options for ANSI sequences
+          fg = {
+            color = "auto",         -- Color for ANSI sequences (auto = inherit from ANSI codes)
+            style = "auto",         -- Style for ANSI sequences (auto = inherit from ANSI codes, or comma-delimited styles)
+                                       -- Valid styles: bold, italic, underline, reverse, strikethrough
+                                       -- Examples: "bold", "italic,underline", "bold,reverse"
+          },
+          bg = {
+            color = "auto",         -- Background color for ANSI sequences (auto = inherit from ANSI codes)
+            style = "auto",         -- Background style for ANSI sequences (auto = inherit from ANSI codes, or comma-delimited styles)
+                                       -- Valid styles: bold, italic, underline, reverse, strikethrough
+                                       -- Examples: "bold", "italic,underline", "bold,reverse"
+          },
+        },
+      },
+      signcolumn = {                -- Signcolumn indicator configuration
+        enabled = false,            -- Enable signcolumn indicators for lines with ANSI codes
+        icon = "𝒜",                 -- Icon to display in signcolumn
+        color = "#6d8086",          -- Color for signcolumn icon (subtle gray-blue)
+      },
+      enabled_filetypes = { "*" },  -- Filetypes to apply highlighting to
+      disabled_filetypes = {},      -- Filetypes to exclude from highlighting
+    })
+<
+
+Options:~
+
+*g:ansillary_conceal*                 (default: `true`)
+    Whether to hide/conceal ANSI escape sequences. When `true`, ANSI codes
+    are hidden except when the cursor is on the same line.
+
+*g:ansillary_reveal_on_cursorline*     (default: `true`)
+    Whether to reveal ANSI codes when the cursor is on the same line.
+    Has no effect when `conceal` is `false`. Set to `false` to keep ANSI
+    codes always hidden.
+
+*g:ansillary_warn_on_unsupported*     (default: `true`)
+    Whether to show warnings when unsupported attributes (dim, blink) are
+    encountered. These attributes are not supported by Neovim and will be
+    ignored regardless of this setting. Set to `false` to silence warnings.
+
+*g:ansillary_text_highlights*         (default: `{enabled=true,format={fg={color="auto",style="auto"},bg={color="auto"}}}`)
+    Text content highlighting configuration. The table has two keys:
+    - `enabled`: Whether to highlight text content based on ANSI codes.
+      When `false`, text will be displayed without any ANSI-based styling.
+    - `format`: Fine-grained control over text highlighting when enabled. Contains
+      `fg` and `bg` sub-tables, each with `color` and `style` keys:
+      - `color`: Use `"auto"` to inherit colors from ANSI codes, or specify a hex
+        color (e.g., `"#ff0000"`) or highlight group name to override ANSI colors.
+      - `style`: Use `"auto"` to inherit styling from ANSI codes, or specify a
+        comma-separated list of styles (e.g., `"bold,italic"`) to override ANSI styling.
+        Valid styles: `bold`, `italic`, `underline`, `reverse`, `strikethrough`.
+
+*g:ansillary_ansi_highlights*         (default: `{enabled=false,format={fg={color="auto",style="auto"},bg={color="auto",style="auto"}}}`)
+    ANSI escape sequence highlighting configuration. The table has two keys:
+    - `enabled`: Whether to highlight ANSI escape sequences themselves (in
+      addition to the styled text they control).
+    - `format`: Fine-grained control over highlighting when enabled. Contains
+      `fg` and `bg` sub-tables, each with `color` and `style` keys:
+      - `color`: Use `"auto"` to inherit colors from ANSI codes, or specify a hex
+        color (e.g., `"#ff0000"`) or highlight group name to override ANSI colors.
+      - `style`: Use `"auto"` to inherit styling from the text, or specify a
+        comma-separated list of styles (e.g., `"bold,italic"`) to override ANSI styling.
+        Valid styles: `bold`, `italic`, `underline`, `reverse`, `strikethrough`.
+
+*g:ansillary_signcolumn*              (default: `{enabled=false,icon="𝒜",color="#6d8086"}`)
+    Signcolumn indicator configuration. The table has three keys:
+    - `enabled`: Whether to display signcolumn indicators for lines containing
+      ANSI escape sequences. When `true`, lines with ANSI codes will show an
+      icon in the signcolumn to indicate that concealed content may be present.
+    - `icon`: The icon to display in the signcolumn for lines with ANSI codes.
+      Can be any single character or Unicode symbol (e.g., `"𝒜"`, `"A"`, `"🌈"`).
+    - `color`: The color for the signcolumn icon. Can be a highlight group name
+      (e.g., `"DiagnosticSignInfo"`, `"DiagnosticSignError"`) or a hex color
+      (e.g., `"#ff6b6b"`).
+
+*g:ansillary_enabled_filetypes*       (default: `{"*"}`)
+    List of filetypes to apply highlighting to. Use `"*"` for all filetypes,
+    or specify specific ones like `{"log", "txt", "*.log"}`.
+
+*g:ansillary_disabled_filetypes*      (default: `{}`)
+    List of filetypes to exclude from highlighting. Overrides enabled_filetypes.
+    An error will be thrown if any filetype appears in both lists.
+Configuration examples: >lua
+    -- Disable concealment (show ANSI codes)
+    require("ansillary").setup({
+      conceal = false,
+    })
+
+    -- Always keep ANSI codes hidden (no cursor reveal)
+    require("ansillary").setup({
+      conceal = true,
+      reveal_on_cursorline = false,
+    })
+
+    -- Disable unsupported attribute warnings
+    require("ansillary").setup({
+      warn_on_unsupported = false,
+    })
+
+    -- Only apply to specific filetypes
+    require("ansillary").setup({
+      enabled_filetypes = { "log", "txt", "*.log", "gitcommit" },
+    })
+
+    -- Apply to all files except specific types
+    require("ansillary").setup({
+      enabled_filetypes = { "*" },
+      disabled_filetypes = { "markdown", "help" },
+    })
+
+    -- Enable signcolumn indicators with default settings
+    require("ansillary").setup({
+      signcolumn = {
+        enabled = true,
+      },
+    })
+
+    -- Enable signcolumn with custom icon and color
+    require("ansillary").setup({
+      signcolumn = {
+        enabled = true,
+        icon = "🌈",
+        color = "#ff6b6b",
+      },
+    })
+
+    -- Enable signcolumn with red color
+    require("ansillary").setup({
+      signcolumn = {
+        enabled = true,
+        icon = "A",
+        color = "#f38ba8",
+      },
+    })
+<
+
+==============================================================================
+5. COMMANDS                                                 *ansillary-commands*
+
+*:AnsillaryToggle*
+    Toggle the entire plugin on/off. When off, all highlighting and
+    concealment is disabled (equivalent to plugin not being loaded).
+
+*:AnsillaryToggleConceal*
+    Toggle ANSI code concealment only. When off, highlighting remains
+    but ANSI codes become visible.
+
+*:AnsillaryToggleReveal*
+    Toggle revealing ANSI codes under cursor. When off, ANSI codes remain
+    hidden even when cursor is on the line (only applies when concealment is enabled).
+
+*:AnsillaryToggleText*
+    Toggle highlighting of text content based on ANSI codes. When off, text
+    content will be displayed without any ANSI-based styling, but ANSI escape
+    sequences can still be highlighted if ansi_highlights is enabled.
+
+*:AnsillaryToggleANSI*
+    Toggle highlighting of ANSI escape sequences themselves. When on, the
+    actual escape sequences will be highlighted with a special color to make
+    them visible (in addition to the styled text they control).
+
+==============================================================================
+==============================================================================
+6. API                                                           *ansillary-api*
+
+API functions: |ansillary.setup()| |ansillary.toggle()| |ansillary.toggle_conceal()| |ansillary.toggle_reveal()| |ansillary.toggle_text_highlights()| |ansillary.toggle_ansi_highlights()|
+
+*ansillary.setup({opts})*                                 *ansillary.setup()*
+    Setup function to initialize the plugin with configuration options.
+
+*ansillary.toggle()*
+    Toggle the entire plugin functionality on/off.
+
+*ansillary.toggle_conceal()*
+    Toggle concealment of ANSI escape sequences.
+
+*ansillary.toggle_reveal()*
+    Toggle revealing ANSI codes under cursor.
+
+*ansillary.toggle_text_highlights()*
+    Toggle highlighting of text content based on ANSI codes.
+
+*ansillary.toggle_ansi_highlights()*
+    Toggle highlighting of ANSI escape sequences themselves.
+
+Example usage: >lua
+    local ansillary = require("ansillary")
+
+    -- Toggle plugin on/off
+    ansillary.toggle()
+
+    -- Toggle concealment
+    ansillary.toggle_conceal()
+
+    -- Toggle cursor reveal
+    ansillary.toggle_reveal()
+
+    -- Toggle highlighting text content
+    ansillary.toggle_text_highlights()
+
+    -- Toggle highlighting ANSI escape sequences
+    ansillary.toggle_ansi_highlights()
+<
+
+==============================================================================
+7. SUPPORTED FORMATS                                       *ansillary-formats*
+
+`ansillary.nvim` supports many different ANSI escape sequence formats:
+
+Basic formats:~
+    \033[1;31;42mText\033[0m                 -- Octal escape
+    \e[1;31;42mText\e[0m                     -- Short escape
+    \x1b[1;31;42mText\x1b[0m                 -- Hex escape (lowercase)
+    \x1B[1;31;42mText\x1B[0m                 -- Hex escape (uppercase)
+
+Unicode formats:~
+    \u001b[1;31;42mText\u001b[0m             -- 4-digit Unicode
+    \U0000001b[1;31;42mText\U0000001b[0m     -- 8-digit Unicode
+
+Bash quoted formats:~
+    $'\033[1;31;42mText\033[0m'              -- Quoted octal escape
+    $'\e[1;31;42mText\e[0m'                  -- Quoted short escape
+    $'\x1b[1;31;42mText\x1b[0m'              -- Quoted hex escape (lowercase)
+    $'\x1B[1;31;42mText\x1B[0m'              -- Quoted hex escape (uppercase)
+    $'\u001b[1;31;42mText\u001b[0m'          -- Quoted 4-digit Unicode
+    $'\U0000001b[1;31;42mText\U0000001b[0m'  -- Quoted 8-digit Unicode
+
+Literal format:~
+    ^[[1;31;42mText^[[0m                     -- Literal ESC character
+
+Grep format:~
+    ESC[1;31;42mESC[KTextESC[mESC[K          -- With clear-to-end-of-line
+
+Supported ANSI codes:~
+
+Colors (Foreground):
+    30-37: Standard colors (black, red, green, yellow, blue, magenta, cyan, white)
+    90-97: Bright colors
+
+Colors (Background):
+    40-47: Standard background colors
+    100-107: Bright background colors
+
+Text Styles:
+    0: Reset (clears all formatting)
+    1: Bold
+    2: Dim (not supported by Neovim - ignored with optional warning)
+    3: Italic
+    4: Underline
+    5: Blink (not supported by Neovim - ignored with optional warning)
+    7: Reverse
+    9: Strikethrough
+
+==============================================================================
+8. EXAMPLES                                                 *ansillary-examples*
+
+Basic usage in a file: >
+    This is \033[31mred text\033[0m and \033[1;32mbold green\033[0m.
+
+    Multiple styles: \033[1;4;35mbold underlined magenta\033[0m
+
+    Background colors: \033[43;34myellow background, blue text\033[0m
+<
+
+Grep output highlighting: >bash
+    grep --color=always "pattern" file.txt | nvim
+<
+
+Shell script with ANSI: >bash
+    echo -e "\e[1;32mSuccess:\e[0m Operation completed"
+    echo -e "\x1b[1;31mError:\x1b[0m Something went wrong"
+<
+
+Mixed formats in one line: >
+    \033[31mRed\033[0m \u001b[32mGreen\u001b[0m ^[[34mBlue^[[0m
+<
+
+==============================================================================
+9. CHANGELOG                                               *ansillary-changelog*
+
+v1.0.0~
+    • Initial release
+    • Support for many ANSI escape sequence formats
+    • Cursor-aware concealment
+    • Real-time highlighting updates
+    • Two toggle commands for full control
+
+==============================================================================
+10. LICENSE                                                 *ansillary-license*
+
+MIT License. See LICENSE file for details.
+
+==============================================================================
+vim:tw=78:ts=8:noet:ft=help:norl:

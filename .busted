@@ -1,0 +1,14 @@
+return {
+  _all = {
+    ROOT = {"."},
+    lua = ".",
+    coverage = false,
+  },
+  default = {
+    verbose = true,
+    output = "utfTerminal"
+  },
+  test = {
+    pattern = "tests/.*%.lua$",
+  }
+}
