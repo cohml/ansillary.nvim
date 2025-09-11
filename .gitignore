@@ -1,0 +1,26 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+
+# Test files (keep test_* files for examples)
+# test_*.txt
+# But ignore temporary test files
+temp_*
+scratch_*
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
