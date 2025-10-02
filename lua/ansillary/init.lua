@@ -25,8 +25,28 @@ local function setup_sign_definition()
     texthl = "AnsillarySign",
   })
 
-  -- Create highlight group for the sign
-  vim.api.nvim_set_hl(0, "AnsillarySign", { fg = config.signcolumn.color, })
+  -- Create highlight group for the sign with styles
+  local sign_hl = { fg = config.signcolumn.format.color }
+
+  -- Parse and apply styles if configured
+  if config.signcolumn.format.style and config.signcolumn.format.style ~= "" then
+    for style in config.signcolumn.format.style:gmatch("[^,]+") do
+      style = style:gsub("^%s*(.-)%s*$", "%1") -- Trim whitespace
+      if style == "bold" then
+        sign_hl.bold = true
+      elseif style == "italic" then
+        sign_hl.italic = true
+      elseif style == "underline" then
+        sign_hl.underline = true
+      elseif style == "reverse" then
+        sign_hl.reverse = true
+      elseif style == "strikethrough" then
+        sign_hl.strikethrough = true
+      end
+    end
+  end
+
+  vim.api.nvim_set_hl(0, "AnsillarySign", sign_hl)
 end
 
 local function place_sign(bufnr, line_number)

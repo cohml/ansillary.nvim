@@ -115,7 +115,12 @@ Default configuration: >lua
       signcolumn = {                -- Signcolumn indicator configuration
         enabled = false,            -- Enable signcolumn indicators for lines with ANSI codes
         icon = "𝒜",                 -- Icon to display in signcolumn
-        color = "#6d8086",          -- Color for signcolumn icon (subtle gray-blue)
+        format = {                  -- Formatting options for signcolumn icon
+          color = "#6d8086",        -- Color for signcolumn icon (subtle gray-blue)
+          style = "",               -- Style for signcolumn icon ("" = none, or comma-delimited styles)
+                                       -- Valid styles: bold, italic, underline, reverse, strikethrough
+                                       -- Examples: "bold", "italic,underline", "bold,reverse"
+        },
       },
       enabled_filetypes = { "*" },  -- Filetypes to apply highlighting to
       disabled_filetypes = {},      -- Filetypes to exclude from highlighting
@@ -162,16 +167,21 @@ Options:~
         comma-separated list of styles (e.g., `"bold,italic"`) to override ANSI styling.
         Valid styles: `bold`, `italic`, `underline`, `reverse`, `strikethrough`.
 
-*g:ansillary_signcolumn*              (default: `{enabled=false,icon="𝒜",color="#6d8086"}`)
+*g:ansillary_signcolumn*              (default: `{enabled=false,icon="𝒜",format={color="#6d8086",style=""}}`)
     Signcolumn indicator configuration. The table has three keys:
     - `enabled`: Whether to display signcolumn indicators for lines containing
       ANSI escape sequences. When `true`, lines with ANSI codes will show an
       icon in the signcolumn to indicate that concealed content may be present.
     - `icon`: The icon to display in the signcolumn for lines with ANSI codes.
       Can be any single character or Unicode symbol (e.g., `"𝒜"`, `"A"`, `"🌈"`).
-    - `color`: The color for the signcolumn icon. Can be a highlight group name
-      (e.g., `"DiagnosticSignInfo"`, `"DiagnosticSignError"`) or a hex color
-      (e.g., `"#ff6b6b"`).
+    - `format`: Fine-grained control over signcolumn icon appearance. Contains
+      `color` and `style` keys:
+      - `color`: The color for the signcolumn icon. Can be a highlight group name
+        (e.g., `"DiagnosticSignInfo"`, `"DiagnosticSignError"`) or a hex color
+        (e.g., `"#ff6b6b"`).
+      - `style`: Comma-separated list of styles (e.g., `"bold,italic"`) to apply
+        to the signcolumn icon. Valid styles: `bold`, `italic`, `underline`,
+        `reverse`, `strikethrough`.
 
 *g:ansillary_enabled_filetypes*       (default: `{"*"}`)
     List of filetypes to apply highlighting to. Use `"*"` for all filetypes,
@@ -215,21 +225,23 @@ Configuration examples: >lua
       },
     })
 
-    -- Enable signcolumn with custom icon and color
+    -- Enable signcolumn with custom icon
     require("ansillary").setup({
       signcolumn = {
         enabled = true,
         icon = "🌈",
-        color = "#ff6b6b",
       },
     })
 
-    -- Enable signcolumn with red color
+    -- Enable signcolumn with red color and bold style
     require("ansillary").setup({
       signcolumn = {
         enabled = true,
         icon = "A",
-        color = "#f38ba8",
+        format = {
+          color = "#f38ba8",
+          style = "bold",
+        },
       },
     })
 <

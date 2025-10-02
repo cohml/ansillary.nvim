@@ -13,10 +13,14 @@
 ---@field enabled boolean    -- Enable ANSI escape sequence highlighting
 ---@field format AnsiFormat  -- Formatting options for ANSI sequences
 
+---@class SignColumnFormat
+---@field color string  -- Color for signcolumn icon
+---@field style string  -- Style for signcolumn icon (bold,italic,underline,reverse,strikethrough)
+
 ---@class SignColumn
----@field enabled boolean  -- Enable signcolumn indicators for lines with ANSI codes
----@field icon string      -- Icon to display in signcolumn
----@field color string     -- Color for signcolumn icon
+---@field enabled boolean         -- Enable signcolumn indicators for lines with ANSI codes
+---@field icon string             -- Icon to display in signcolumn
+---@field format SignColumnFormat -- Formatting options for signcolumn icon
 
 ---@class Config
 ---@field conceal boolean                 -- Hide ANSI escape sequences
@@ -64,7 +68,10 @@ return {
   signcolumn = {                -- Signcolumn indicator configuration
     enabled = false,            -- Enable signcolumn indicators for lines with ANSI codes
     icon = "𝒜",                 -- Icon to display in signcolumn
-    color = "#6d8086",          -- Color for signcolumn icon (subtle gray-blue)
+    format = {                  -- Formatting options for signcolumn icon
+      color = "#6d8086",        -- Color for signcolumn icon (subtle gray-blue)
+      style = "",               -- Style for signcolumn icon ("" = none, or comma-delimited styles)
+    },
   },
   enabled_filetypes = { "*" },  -- Filetypes to apply highlighting to
   disabled_filetypes = {},      -- Filetypes to exclude from highlighting

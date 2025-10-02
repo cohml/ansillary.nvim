@@ -94,7 +94,12 @@ require("ansillary").setup({
   signcolumn = {                -- Signcolumn indicator configuration
     enabled = false,            -- Enable signcolumn indicators for lines with ANSI codes
     icon = "𝒜",                 -- Icon to display in signcolumn
-    color = "#6d8086",          -- Color for signcolumn icon (subtle gray-blue)
+    format = {                  -- Formatting options for signcolumn icon
+      color = "#6d8086",        -- Color for signcolumn icon (subtle gray-blue)
+      style = "",               -- Style for signcolumn icon ("" = none, or comma-delimited styles)
+                                   -- Valid styles: bold, italic, underline, reverse, strikethrough
+                                   -- Examples: "bold", "italic,underline", "bold,reverse"
+    },
   },
   enabled_filetypes = { "*" },  -- Filetypes to apply highlighting to
   disabled_filetypes = {},      -- Filetypes to exclude from highlighting
@@ -119,7 +124,8 @@ require("ansillary").setup({
 | `ansi_highlights.format.bg.style` | `string` | `"auto"` | Background style for ANSI sequences - use `"auto"` to inherit from ANSI codes, or specify custom styles (`"bold,italic"` etc.) |
 | `signcolumn.enabled` | `boolean` | `false` | Enable signcolumn indicators for lines with ANSI codes |
 | `signcolumn.icon` | `string` | `"𝒜"` | Icon to display in signcolumn for lines with ANSI codes |
-| `signcolumn.color` | `string` | `"#6d8086"` | Color for signcolumn icon (highlight group name or hex color) |
+| `signcolumn.format.color` | `string` | `"#6d8086"` | Color for signcolumn icon (highlight group name or hex color) |
+| `signcolumn.format.style` | `string` | `""` | Style for signcolumn icon - specify custom styles (`"bold,italic"` etc.) |
 | `enabled_filetypes` | `table<string>` | `{"*"}` | Filetypes to apply highlighting to (e.g., `{"log", "txt", "*.log"}`) |
 | `disabled_filetypes` | `table<string>` | `{}` | Filetypes to exclude from highlighting (overrides `enabled_filetypes`, error if overlaps) |
 
@@ -222,21 +228,23 @@ require("ansillary").setup({
   },
 })
 
--- Enable signcolumn with custom icon and color
+-- Enable signcolumn with custom icon
 require("ansillary").setup({
   signcolumn = {
     enabled = true,
     icon = "🌈",
-    color = "#ff6b6b",
   },
 })
 
--- Enable signcolumn with red color
+-- Enable signcolumn with red color and bold style
 require("ansillary").setup({
   signcolumn = {
     enabled = true,
     icon = "A",
-    color = "#f38ba8",
+    format = {
+      color = "#f38ba8",
+      style = "bold",
+    },
   },
 })
 ```

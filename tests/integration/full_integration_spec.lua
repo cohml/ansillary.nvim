@@ -569,7 +569,10 @@ describe("ansillary integration tests", function()
         signcolumn = {
           enabled = true,
           icon = "A",
-          color = "#6d8086",
+          format = {
+            color = "#6d8086",
+            style = "",
+          },
         },
       })
       ansillary._trigger_highlighting_for_tests()

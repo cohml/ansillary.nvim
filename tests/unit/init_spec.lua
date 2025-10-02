@@ -525,7 +525,10 @@ describe("ansillary.init", function()
         signcolumn = {
           enabled = true,
           icon = "A",
-          color = "#6d8086",
+          format = {
+            color = "#6d8086",
+            style = "",
+          },
         },
       })
       ansillary._trigger_highlighting_for_tests()
@@ -592,7 +595,6 @@ describe("ansillary.init", function()
         signcolumn = {
           enabled = true,
           icon = "🌈",
-          color = "#ff6b6b",
         },
       })
 
