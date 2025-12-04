@@ -17,7 +17,10 @@ styles, while hiding literal escape sequences from view with intelligent cursor-
 
 ## 📦 Installation
 
-### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+<details>
+<summary>Code</summary>
 
 ```lua
 {
@@ -28,7 +31,12 @@ styles, while hiding literal escape sequences from view with intelligent cursor-
 }
 ```
 
-### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
+</details>
+
+### [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+<details>
+<summary>Code</summary>
 
 ```lua
 use {
@@ -39,21 +47,36 @@ use {
 }
 ```
 
-### Using [vim-plug](https://github.com/junegunn/vim-plug)
+</details>
+
+### [vim-plug](https://github.com/junegunn/vim-plug)
+
+<details>
+<summary>Code</summary>
 
 ```vim
 Plug 'cohml/ansillary.nvim'
 ```
 
-Then add to your `init.lua`:
+</details>
+
+Then add to your `init.lua`.
+
+<details>
+<summary>Code</summary>
 
 ```lua
 require("ansillary").setup()
 ```
 
+</details>
+
 ## ⚙️ Configuration
 
 ### Default Settings
+
+<details>
+<summary>Code</summary>
 
 ```lua
 require("ansillary").setup({
@@ -106,7 +129,13 @@ require("ansillary").setup({
 })
 ```
 
+</details>
+
 ### Configuration Options
+
+<details>
+<summary>Table</summary>
+
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -129,37 +158,72 @@ require("ansillary").setup({
 | `enabled_filetypes` | `table<string>` | `{"*"}` | Filetypes to apply highlighting to (e.g., `{"log", "txt", "*.log"}`) |
 | `disabled_filetypes` | `table<string>` | `{}` | Filetypes to exclude from highlighting (overrides `enabled_filetypes`, error if overlaps) |
 
+
+</details>
+
 ### Examples
 
+<details>
+<summary>Show ANSI codes always (no concealment)</summary>
+
 ```lua
--- Show ANSI codes always (no concealment)
 require("ansillary").setup({
   conceal = false,
 })
+```
 
--- Apply only to specific file types
+</details>
+
+<details>
+<summary>Apply only to specific file types</summary>
+
+```lua
 require("ansillary").setup({
   enabled_filetypes = { "log", "txt", "*.log", "gitcommit" },
 })
+```
 
--- Apply to all files except specific types
+</details>
+
+<details>
+<summary>Apply to all files except specific types</summary>
+
+```lua
 require("ansillary").setup({
   enabled_filetypes = { "*" },
   disabled_filetypes = { "markdown", "help" },
 })
+```
 
--- Disable unsupported attribute warnings
+</details>
+
+<details>
+<summary>Disable unsupported attribute warnings</summary>
+
+```lua
 require("ansillary").setup({
   warn_on_unsupported = false,
 })
+```
 
--- Always keep ANSI codes hidden (no cursor reveal)
+</details>
+
+<details>
+<summary>Always keep ANSI codes hidden (no cursor reveal)</summary>
+
+```lua
 require("ansillary").setup({
   conceal = true,
   reveal_on_cursorline = false,
 })
+```
 
--- Enable ANSI highlighting with auto-inheritance
+</details>
+
+<details>
+<summary>Enable ANSI highlighting with auto-inheritance</summary>
+
+```lua
 require("ansillary").setup({
   ansi_highlights = {
     enabled = true,
@@ -169,8 +233,14 @@ require("ansillary").setup({
     },
   },
 })
+```
 
--- Custom ANSI highlighting (gray with bold)
+</details>
+
+<details>
+<summary>Custom ANSI highlighting (gray with bold)</summary>
+
+```lua
 require("ansillary").setup({
   ansi_highlights = {
     enabled = true,
@@ -180,8 +250,14 @@ require("ansillary").setup({
     },
   },
 })
+```
 
--- Mixed auto and custom highlighting
+</details>
+
+<details>
+<summary>Mixed auto and custom highlighting</summary>
+
+```lua
 require("ansillary").setup({
   ansi_highlights = {
     enabled = true,
@@ -191,15 +267,27 @@ require("ansillary").setup({
     },
   },
 })
+```
 
--- Disable text highlighting (only show raw text, no ANSI styling)
+</details>
+
+<details>
+<summary>Disable text highlighting (only show raw text, no ANSI styling)</summary>
+
+```lua
 require("ansillary").setup({
   text_highlights = {
     enabled = false,
   },
 })
+```
 
--- Custom text highlighting (override ANSI codes with fixed styling)
+</details>
+
+<details>
+<summary>Custom text highlighting (override ANSI codes with fixed styling)</summary>
+
+```lua
 require("ansillary").setup({
   text_highlights = {
     enabled = true,
@@ -209,8 +297,14 @@ require("ansillary").setup({
     },
   },
 })
+```
 
--- Mixed text highlighting (custom color, auto styling from ANSI)
+</details>
+
+<details>
+<summary>Mixed text highlighting (custom color, auto styling from ANSI)</summary>
+
+```lua
 require("ansillary").setup({
   text_highlights = {
     enabled = true,
@@ -220,23 +314,41 @@ require("ansillary").setup({
     },
   },
 })
+```
 
--- Enable signcolumn indicators with default settings
+</details>
+
+<details>
+<summary>Enable signcolumn indicators with default settings</summary>
+
+```lua
 require("ansillary").setup({
   signcolumn = {
     enabled = true,
   },
 })
+```
 
--- Enable signcolumn with custom icon
+</details>
+
+<details>
+<summary>Enable signcolumn with custom icon</summary>
+
+```lua
 require("ansillary").setup({
   signcolumn = {
     enabled = true,
     icon = "🌈",
   },
 })
+```
 
--- Enable signcolumn with red color and bold style
+</details>
+
+<details>
+<summary>Enable signcolumn with red color and bold style</summary>
+
+```lua
 require("ansillary").setup({
   signcolumn = {
     enabled = true,
@@ -248,6 +360,8 @@ require("ansillary").setup({
   },
 })
 ```
+
+</details>
 
 ## 🎮 Commands
 
